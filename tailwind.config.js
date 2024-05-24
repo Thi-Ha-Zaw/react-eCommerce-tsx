@@ -10,7 +10,7 @@ module.exports = {
   prefix: "",
   theme: {
     fontFamily: {
-      sans: ['Roboto', 'sans-serif'],
+      sans: ['Mulish', 'sans-serif'],
       serif: ['Roboto Slab', 'serif'],
     },
     container: {
