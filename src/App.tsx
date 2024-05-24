@@ -3,7 +3,7 @@ import { Button } from "./components/ui/button";
 const App = () => {
     return (
         <div>
-            <Button variant={"default"}>Click me</Button>
+            <h1 className=" text-3xl">Hello world</h1>
         </div>
     );
 };

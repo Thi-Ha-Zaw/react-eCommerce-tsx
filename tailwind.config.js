@@ -9,6 +9,10 @@ module.exports = {
   ],
   prefix: "",
   theme: {
+    fontFamily: {
+      sans: ['Roboto', 'sans-serif'],
+      serif: ['Roboto Slab', 'serif'],
+    },
     container: {
       center: true,
       padding: "2rem",
@@ -17,6 +21,9 @@ module.exports = {
       },
     },
     extend: {
+      fontFamily: {
+        roboto_condensed : ['Roboto Condensed', 'sans-serif'],
+      },
       keyframes: {
         "accordion-down": {
           from: { height: "0" },
