@@ -10,7 +10,7 @@ module.exports = {
   prefix: "",
   theme: {
     fontFamily: {
-      sans: ['Mulish', 'sans-serif'],
+      sans: ['Roboto', 'sans-serif'],
       serif: ['Roboto Slab', 'serif'],
     },
     container: {
@@ -22,7 +22,8 @@ module.exports = {
     },
     extend: {
       fontFamily: {
-        roboto_condensed : ['Roboto Condensed', 'sans-serif'],
+        roboto_condensed: ['Roboto Condensed', 'sans-serif'],
+        mulish : ['Mulish', 'sans-serif'],
       },
       keyframes: {
         "accordion-down": {
