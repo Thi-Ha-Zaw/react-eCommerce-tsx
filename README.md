@@ -19,6 +19,7 @@ I added the custom class with name of **no-scrollbar** that hides the nasty ugly
 ```
 
 Here's the result:
+https://github.com/shahil-yadav/react-eCommerce-tsx/assets/144932369/21c91abe-26e1-431e-997b-2bd8a6919c5c
 
 ## Personal preferences :
 
