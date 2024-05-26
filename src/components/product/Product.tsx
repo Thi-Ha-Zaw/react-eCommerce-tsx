@@ -1,17 +1,30 @@
 import type { Product } from "@/app/types";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { FaRegStar, FaStar } from "react-icons/fa";
 import { Button } from "../ui/button";
-import { Fade,Slide } from "react-awesome-reveal";
+import { Fade } from "react-awesome-reveal";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { setCarts } from "@/app/features/cart/cartSlice";
 
 type Props = {
     product: Product;
 };
 
-const Product = ({
-    product: { id, image, title, description, rating, price },
-}: Props) => {
+const Product = ({ product }: Props) => {
     const [isHover, setIsHover] = useState(false);
+    const [addedProductId, setAddedProductId] = useState("");
+
+    const { carts } = useAppSelector(state => state.cart);
+
+    const dispatch = useAppDispatch();
+
+    const handleAddToCart = (): void => {
+        setAddedProductId(product.id);
+
+        const updatedCarts = [...carts, product];
+
+        dispatch(setCarts(updatedCarts));
+    };
 
     return (
         <Fade>
@@ -21,7 +34,7 @@ const Product = ({
                 onMouseLeave={() => setIsHover(false)}
             >
                 <img
-                    src={image}
+                    src={product.image}
                     className=" h-32 -mb-16 ms-5 group-hover:-rotate-6 duration-300"
                     alt=""
                 />
@@ -31,13 +44,15 @@ const Product = ({
                 >
                     <div className=" flex flex-col gap-2 pt-16">
                         <p className=" font-bold font-roboto_condensed line-clamp-1">
-                            {title}
+                            {product.title}
                         </p>
-                        <p className=" text-xs line-clamp-3">{description}</p>
+                        <p className=" text-xs line-clamp-3">
+                            {product.description}
+                        </p>
                         <div className=" flex justify-between mt-3">
                             <div className=" flex gap-1 items-center">
                                 {Array.from({ length: 5 }, (_, i) =>
-                                    i < Math.ceil(rating.rate) ? (
+                                    i < Math.ceil(product.rating.rate) ? (
                                         <FaStar key={i} />
                                     ) : (
                                         <FaRegStar key={i} />
@@ -45,20 +60,26 @@ const Product = ({
                                 )}
                             </div>
                             <div>
-                                (<span>{rating.rate}</span> /
-                                <span>{rating.count}</span>)
+                                (<span>{product.rating.rate}</span> /
+                                <span>{product.rating.count}</span>)
                             </div>
                         </div>
                     </div>
                     <hr className=" border-gray-700 my-5" />
                     <div className=" flex justify-between items-center">
                         <p className=" font-bold text-lg">
-                            $<span>{price}</span>
+                            $<span>{product.price}</span>
                         </p>
                         <div>
                             <Button
+                                disabled={addedProductId == product.id}
+                                onClick={handleAddToCart}
                                 size={"sm"}
-                                variant={"outline"}
+                                variant={
+                                    addedProductId == product.id
+                                        ? "default"
+                                        : "outline"
+                                }
                                 className=" text-xs"
                             >
                                 Add To Cart

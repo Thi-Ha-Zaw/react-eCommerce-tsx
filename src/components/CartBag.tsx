@@ -1,8 +1,12 @@
+import { useAppSelector } from "@/app/hooks";
 import { FaShopify } from "react-icons/fa";
 
 type Props = {};
 
 const CartBag = (props: Props) => {
+
+    const { carts } = useAppSelector(state => state.cart);
+    console.log(carts)
     return (
         <button
             type="button"
@@ -10,7 +14,9 @@ const CartBag = (props: Props) => {
         >
             <FaShopify className=" text-xl" />
             <div className="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-gray-700 border-2 border-white rounded-full -top-2 -end-2 dark:border-gray-900">
-                20
+                {
+                    carts.length
+                }
             </div>
         </button>
     );
