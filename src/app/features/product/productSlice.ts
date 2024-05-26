@@ -4,29 +4,28 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 
 export interface ProductState {
     products: Product[];
-    isTrue: boolean;
+    allProducts: Product[];
 }
 
 const initialState: ProductState = {
     products: [],
-    isTrue : false
+    allProducts: [],
 };
 
 export const productSlice = createSlice({
     name: "product",
     initialState,
     reducers: {
-        setProducts: (state, action: PayloadAction<Product[]>) => {
-            state.products = action.payload;
+        setProducts: (state, { payload}: PayloadAction<Product[]>) => {
+            state.products = payload;
         },
-
-        setTrue: (state, {payload}) => {
-            state.isTrue = payload;
-        }
+        setAllProducts: (state, { payload}: PayloadAction<Product[]>) => {
+            state.allProducts = payload;
+        },
     },
 });
 
 // Action creators are generated for each case reducer function
-export const {setProducts,setTrue} = productSlice.actions;
+export const { setProducts,setAllProducts } = productSlice.actions;
 
 export default productSlice.reducer;
