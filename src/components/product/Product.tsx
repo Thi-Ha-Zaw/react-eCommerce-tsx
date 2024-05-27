@@ -1,10 +1,14 @@
 import type { Product } from "@/app/types";
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 import { FaRegStar, FaStar } from "react-icons/fa";
 import { Button } from "../ui/button";
 import { Fade } from "react-awesome-reveal";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { setCarts } from "@/app/features/cart/cartSlice";
+import {
+    setAllProducts,
+    setProducts,
+} from "@/app/features/product/productSlice";
 
 type Props = {
     product: Product;
@@ -12,14 +16,19 @@ type Props = {
 
 const Product = ({ product }: Props) => {
     const [isHover, setIsHover] = useState(false);
-    const [addedProductId, setAddedProductId] = useState("");
 
     const { carts } = useAppSelector(state => state.cart);
+    const { products } = useAppSelector(state => state.product);
 
     const dispatch = useAppDispatch();
 
     const handleAddToCart = (): void => {
-        setAddedProductId(product.id);
+        const updatedProducts = products.map(pd =>
+            pd.id == product.id ? { ...pd, isInCart: true } : pd
+        );
+
+        dispatch(setProducts(updatedProducts));
+        dispatch(setAllProducts(updatedProducts));
 
         const updatedCarts = [...carts, product];
 
@@ -72,13 +81,11 @@ const Product = ({ product }: Props) => {
                         </p>
                         <div>
                             <Button
-                                disabled={addedProductId == product.id}
+                                disabled={product.isInCart}
                                 onClick={handleAddToCart}
                                 size={"sm"}
                                 variant={
-                                    addedProductId == product.id
-                                        ? "default"
-                                        : "outline"
+                                    product.isInCart ? "default" : "outline"
                                 }
                                 className=" text-xs"
                             >

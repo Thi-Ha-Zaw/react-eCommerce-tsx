@@ -20,10 +20,14 @@ const ProductsPage = (props: Props) => {
     const dispatch = useAppDispatch();
 
     const { products } = useAppSelector(state => state.product);
+    console.log(products)
 
     useEffect(() => {
-        data && dispatch(setProducts(data));
-        data && dispatch(setAllProducts(data));
+        if (data) {
+            const productsArr = data.map(pd => ({ ...pd, isInCart: false }));
+            dispatch(setProducts(productsArr));
+            dispatch(setAllProducts(productsArr));
+        }
     }, [data]);
 
     return (

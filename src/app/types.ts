@@ -6,4 +6,5 @@ export type Product = {
     price: number;
     rating: { rate: number; count: number };
     title: string;
+    isInCart: boolean;
 };
