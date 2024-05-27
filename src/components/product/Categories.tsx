@@ -2,9 +2,9 @@ import { useGetProductCategoriesQuery } from "@/app/services/product/productApi"
 import Category from "./Category";
 import { Skeleton } from "../ui/skeleton";
 import { Fade } from "react-awesome-reveal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { setProducts } from "@/app/features/product/productSlice";
+import { setCategory, setProducts } from "@/app/features/product/productSlice";
 
 type Props = {};
 
@@ -12,7 +12,9 @@ const Categories = (props: Props) => {
     const { data: allCategories, isLoading: isCategoryLoading } =
         useGetProductCategoriesQuery();
 
-    const { allProducts } = useAppSelector(state => state.product);
+    const { allProducts, searchedKeyword } = useAppSelector(
+        state => state.product
+    );
 
     const dispatch = useAppDispatch();
 
@@ -20,11 +22,20 @@ const Categories = (props: Props) => {
 
     const handleSelectedAllBtn = (): void => {
         setSelectedCategory("");
-        dispatch(setProducts(allProducts));
+        const filterProducts = allProducts.filter(
+            product =>
+                product.description.toLowerCase().includes(searchedKeyword) ||
+                product.title.toLowerCase().includes(searchedKeyword)
+        );
+        searchedKeyword ? dispatch(setProducts(filterProducts)) : dispatch(setProducts(allProducts));
     };
 
+    useEffect(() => {
+        dispatch(setCategory(selectedCategory));
+    }, [selectedCategory]);
+
     return (
-        <div className=" mb-10 flex justify-center gap-3">
+        <div className=" mb-10 flex justify-center gap-3 flex-wrap">
             {isCategoryLoading ? (
                 <>
                     {Array.from({ length: 5 }, (_, i) => i).map((_, i) => (

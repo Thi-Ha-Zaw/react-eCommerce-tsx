@@ -3,7 +3,6 @@ import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { Product } from "@/app/types";
 import { Dispatch, SetStateAction } from "react";
 
-
 type Props = {
     category: string;
     selectedCategory: string;
@@ -11,14 +10,24 @@ type Props = {
     allProducts: Product[];
 };
 
-const Category = ({ category,selectedCategory,setSelectedCategory,allProducts }: Props) => {
-    
-
+const Category = ({
+    category,
+    selectedCategory,
+    setSelectedCategory,
+    allProducts,
+}: Props) => {
+    const { searchedKeyword } = useAppSelector(state => state.product);
 
     const dispatch = useAppDispatch();
     const handleSelectedCategory = (category: string): void => {
-        const filterProducts = allProducts.filter(
-            product => product.category.toLowerCase() == category
+        const filterProducts = allProducts.filter(product =>
+            searchedKeyword
+                ? (product.description
+                      .toLowerCase()
+                      .includes(searchedKeyword) ||
+                      product.title.toLowerCase().includes(searchedKeyword)) &&
+                  product.category.toLowerCase() == category
+                : product.category.toLowerCase() == category
         );
         dispatch(setProducts(filterProducts));
         setSelectedCategory(category);
