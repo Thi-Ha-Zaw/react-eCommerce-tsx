@@ -3,8 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 export interface CartState {
-    carts: Product[];
-    allCarts: Product[];
+    carts: Required<Product>[];
+    allCarts: Required<Product>[];
     isCartSheetOpen: boolean;
 }
 
@@ -18,10 +18,10 @@ export const cartSlice = createSlice({
     name: "cart",
     initialState,
     reducers: {
-        setCarts: (state, { payload }: PayloadAction<Product[]>) => {
+        setCarts: (state, { payload }: PayloadAction<Required<Product>[]>) => {
             state.carts = payload;
         },
-        setAllCarts: (state, { payload }: PayloadAction<Product[]>) => {
+        setAllCarts: (state, { payload }: PayloadAction<Required<Product>[]>) => {
             state.allCarts = payload;
         },
         setCartSheetOpen: (state, { payload }: PayloadAction<boolean>) => {

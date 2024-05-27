@@ -4,7 +4,7 @@ import { FaRegStar, FaStar } from "react-icons/fa";
 import { Button } from "../ui/button";
 import { Fade } from "react-awesome-reveal";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { setCarts } from "@/app/features/cart/cartSlice";
+import { setAllCarts, setCarts } from "@/app/features/cart/cartSlice";
 import {
     setAllProducts,
     setProducts,
@@ -30,9 +30,10 @@ const Product = ({ product }: Props) => {
         dispatch(setProducts(updatedProducts));
         dispatch(setAllProducts(updatedProducts));
 
-        const updatedCarts = [...carts, product];
+        const updatedCarts = [...carts, {...product,quantity : 1}];
 
         dispatch(setCarts(updatedCarts));
+        dispatch(setAllCarts(updatedCarts));
     };
 
     return (
@@ -69,7 +70,7 @@ const Product = ({ product }: Props) => {
                                 )}
                             </div>
                             <div>
-                                (<span>{product.rating.rate}</span> /
+                                (<span>{product.rating.rate}</span>/
                                 <span>{product.rating.count}</span>)
                             </div>
                         </div>

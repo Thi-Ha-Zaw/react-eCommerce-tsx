@@ -5,9 +5,8 @@ import { FaShopify } from "react-icons/fa";
 type Props = {};
 
 const CartBag = (props: Props) => {
-    const { carts,isCartSheetOpen } = useAppSelector(state => state.cart);
-    console.log(isCartSheetOpen)
-
+    const { carts } = useAppSelector(state => state.cart);
+    
     const dispatch = useAppDispatch();
     
     return (

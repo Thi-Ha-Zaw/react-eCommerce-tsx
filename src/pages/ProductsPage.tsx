@@ -20,10 +20,11 @@ const ProductsPage = (props: Props) => {
     const dispatch = useAppDispatch();
 
     const { products } = useAppSelector(state => state.product);
-    console.log(products)
+
 
     useEffect(() => {
         if (data) {
+            
             const productsArr = data.map(pd => ({ ...pd, isInCart: false }));
             dispatch(setProducts(productsArr));
             dispatch(setAllProducts(productsArr));
@@ -35,7 +36,7 @@ const ProductsPage = (props: Props) => {
             <Categories />
             <div
                 className={` grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 justify-items-center ${
-                    isLoading ? " gap-y-5 sm:gap-3" : " gap-y-5 sm:gap-8"
+                    isLoading ? " gap-y-5 sm:gap-5" : " gap-y-5 sm:gap-8"
                 }`}
             >
                 {isLoading && (

@@ -39,7 +39,7 @@ const Categories = (props: Props) => {
             {isCategoryLoading ? (
                 <>
                     {Array.from({ length: 5 }, (_, i) => i).map((_, i) => (
-                        <Skeleton key={i} className=" w-[100px] h-6" />
+                        <Skeleton key={i} className=" w-[120px] h-6" />
                     ))}
                 </>
             ) : (
