@@ -4,11 +4,12 @@ import { FaRegStar, FaStar } from "react-icons/fa";
 import { Button } from "../ui/button";
 import { Fade } from "react-awesome-reveal";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { setAllCarts, setCarts } from "@/app/features/cart/cartSlice";
+import { setCarts } from "@/app/features/cart/cartSlice";
 import {
     setAllProducts,
     setProducts,
 } from "@/app/features/product/productSlice";
+import Swal from "sweetalert2";
 
 type Props = {
     product: Product;
@@ -23,17 +24,43 @@ const Product = ({ product }: Props) => {
     const dispatch = useAppDispatch();
 
     const handleAddToCart = (): void => {
-        const updatedProducts = products.map(pd =>
-            pd.id == product.id ? { ...pd, isInCart: true } : pd
-        );
+        if (product.isInCart) {
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "question",
+                iconColor: "#1f2937",
+                showCancelButton: true,
+                confirmButtonColor: "#1f2937",
+                cancelButtonColor: "#1f2937",
+                confirmButtonText: "Confrim",
+            }).then(result => {
+                if (result.isConfirmed) {
+                    const updatedProducts = products.map(pd =>
+                        pd.id == product.id ? { ...pd, isInCart: false } : pd
+                    );
 
-        dispatch(setProducts(updatedProducts));
-        dispatch(setAllProducts(updatedProducts));
+                    dispatch(setProducts(updatedProducts));
+                    dispatch(setAllProducts(updatedProducts));
 
-        const updatedCarts = [...carts, {...product,quantity : 1}];
+                    const updatedCarts = carts.filter(
+                        cart => cart.id != product.id
+                    );
+                    dispatch(setCarts(updatedCarts));
+                }
+            });
+        } else {
+            const updatedProducts = products.map(pd =>
+                pd.id == product.id ? { ...pd, isInCart: true } : pd
+            );
 
-        dispatch(setCarts(updatedCarts));
-        dispatch(setAllCarts(updatedCarts));
+            dispatch(setProducts(updatedProducts));
+            dispatch(setAllProducts(updatedProducts));
+
+            const updatedCarts = [...carts, { ...product, quantity: 1 }];
+
+            dispatch(setCarts(updatedCarts));
+        }
     };
 
     return (
@@ -82,7 +109,7 @@ const Product = ({ product }: Props) => {
                         </p>
                         <div>
                             <Button
-                                disabled={product.isInCart}
+                                // disabled={product.isInCart}
                                 onClick={handleAddToCart}
                                 size={"sm"}
                                 variant={

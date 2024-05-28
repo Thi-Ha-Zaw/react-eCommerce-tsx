@@ -3,7 +3,7 @@ export type Product = {
     description: string;
     id: string;
     image: string;
-    price: string;
+    price: number;
     rating: { rate: number; count: number };
     title: string;
     isInCart: boolean;

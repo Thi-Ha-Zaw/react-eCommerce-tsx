@@ -21,16 +21,60 @@ export const cartSlice = createSlice({
         setCarts: (state, { payload }: PayloadAction<Required<Product>[]>) => {
             state.carts = payload;
         },
-        setAllCarts: (state, { payload }: PayloadAction<Required<Product>[]>) => {
+        setAllCarts: (
+            state,
+            { payload }: PayloadAction<Required<Product>[]>
+        ) => {
             state.allCarts = payload;
         },
         setCartSheetOpen: (state, { payload }: PayloadAction<boolean>) => {
             state.isCartSheetOpen = payload;
         },
+        increaseQuantity: (
+            state,
+            { payload }: PayloadAction<Required<Product>>
+        ) => {
+            const currentCart = state.carts.find(ct => ct.id == payload.id);
+            if (currentCart) {
+                currentCart.quantity += 1;
+                currentCart.price = parseFloat(
+                    (
+                        currentCart.price +
+                        currentCart.price / (currentCart.quantity - 1)
+                    ).toFixed(2)
+                );
+            }
+        },
+        decreaseQuantity: (
+            state,
+            { payload }: PayloadAction<Required<Product>>
+        ) => {
+            const currentCart = state.carts.find(ct => ct.id == payload.id);
+
+            if (currentCart && currentCart.quantity > 1) {
+                currentCart.quantity -= 1;
+                currentCart.price = parseFloat(
+                    (
+                        currentCart.price -
+                        currentCart.price / (currentCart.quantity + 1)
+                    ).toFixed(2)
+                );
+            }
+        },
+        removCart: (state, { payload }: PayloadAction<Required<Product>>) => {
+            state.carts = state.carts.filter(ct => ct.id != payload.id);
+        },
     },
 });
 
 // Action creators are generated for each case reducer function
-export const { setCarts, setAllCarts, setCartSheetOpen } = cartSlice.actions;
+export const {
+    setCarts,
+    setAllCarts,
+    setCartSheetOpen,
+    increaseQuantity,
+    decreaseQuantity,
+    removCart,
+} = cartSlice.actions;
 
 export default cartSlice.reducer;
