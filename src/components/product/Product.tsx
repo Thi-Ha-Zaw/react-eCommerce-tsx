@@ -1,5 +1,5 @@
-import type { Product } from "@/app/types";
-import { useState } from "react";
+import type {  Product } from "@/app/types";
+import { useEffect, useRef, useState } from "react";
 import { FaRegStar, FaStar } from "react-icons/fa";
 import { Button } from "../ui/button";
 import { Fade } from "react-awesome-reveal";
@@ -10,6 +10,7 @@ import {
     setProducts,
 } from "@/app/features/product/productSlice";
 import Swal from "sweetalert2";
+import AnimatedImage from "./AnimatedImage";
 
 type Props = {
     product: Product;
@@ -17,6 +18,10 @@ type Props = {
 
 const Product = ({ product }: Props) => {
     const [isHover, setIsHover] = useState(false);
+    const [isImgAnimated, setIsImgAnimated] = useState(false);
+    const [imgInfo, setImgInfo] = useState<DOMRect | null>(null);
+
+    const imgRef = useRef<HTMLImageElement | null>(null);
 
     const { carts } = useAppSelector(state => state.cart);
     const { products } = useAppSelector(state => state.product);
@@ -60,8 +65,16 @@ const Product = ({ product }: Props) => {
             const updatedCarts = [...carts, { ...product, quantity: 1 }];
 
             dispatch(setCarts(updatedCarts));
+            setIsImgAnimated(true);
         }
     };
+
+    useEffect(() => {
+        if (imgRef.current) {
+            // const { width, height, top, left } = imgRef.current.getBoundingClientRect();
+            setImgInfo(imgRef.current.getBoundingClientRect());
+        }
+    }, []);
 
     return (
         <Fade>
@@ -71,10 +84,18 @@ const Product = ({ product }: Props) => {
                 onMouseLeave={() => setIsHover(false)}
             >
                 <img
+                    ref={imgRef}
                     src={product.image}
                     className=" h-32 -mb-16 ms-5 group-hover:-rotate-6 duration-300"
                     alt=""
                 />
+                {isImgAnimated && (
+                    <AnimatedImage
+                        src={product.image}
+                        imgInfo={imgInfo}
+                        setIsImgAnimated={setIsImgAnimated}
+                    />
+                )}
                 <div
                     className=" shadow group-hover:shadow-2xl duration-300 rounded-lg p-5 "
                     style={{ transform: isHover ? "rotateX(25deg)" : "" }}

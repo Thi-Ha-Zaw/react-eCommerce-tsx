@@ -9,3 +9,11 @@ export type Product = {
     isInCart: boolean;
     quantity?: number;
 };
+
+export type DomRectInfo = {
+    width: number;
+    height: number;
+    top: number;
+    left: number;
+  
+};
