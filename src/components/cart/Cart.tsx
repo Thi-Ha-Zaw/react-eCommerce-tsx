@@ -23,46 +23,121 @@ const Cart = ({ cart }: Props) => {
     const dispatch = useAppDispatch();
 
     const [deletedPdId, setDeletedPdId] = useState("");
+    const [clones, setClones] = useState<HTMLImageElement[]>([]);
 
-    const { products,allProducts } = useAppSelector(state => state.product);
+    console.log(clones);
+
+    const { products, allProducts } = useAppSelector(state => state.product);
+
+    const animateQuantityAdded = () => {
+        const cartItem = document.querySelector(
+            `div[img-div-id='${cart.id}']`
+        ) as HTMLDivElement;
+        console.log(cartItem);
+        const imgElement = document.querySelector(
+            `.cart-item img[data-id='${cart.id}']`
+        ) as HTMLImageElement;
+        if (!imgElement) return;
+
+        const imgRect = imgElement.getBoundingClientRect();
+        const cloneIndex = clones.length;
+        const offset = (imgRect.width / 2) * cloneIndex;
+
+        const clonedImg = imgElement.cloneNode(true) as HTMLImageElement;
+        clonedImg.style.position = "fixed";
+        clonedImg.style.top = `${imgRect.top}px`;
+        clonedImg.style.left = `${imgRect.left + offset}px`;
+        clonedImg.style.width = `${imgRect.width}px`;
+        clonedImg.style.height = `${imgRect.height}px`;
+        clonedImg.style.transition = "all 0.5s ease";
+        clonedImg.style.zIndex = "1000"; // Ensure it's above other elements
+        clonedImg.classList.add(
+            "animate__animated",
+            "animate__rotateInDownRight",
+            "clone"
+        ); // Add animate.css classes and a custom class
+
+        cartItem.appendChild(clonedImg);
+        // Add the new clone to the list of clones
+        setClones(prevClones => [...prevClones, clonedImg]);
+    };
 
     const handleAddQuantity = (): void => {
         dispatch(increaseQuantity(cart));
+        animateQuantityAdded();
+    };
+
+    const removeLastClone = () => {
+        const lastClone = clones[clones.length - 1];
+        if (lastClone) {
+            lastClone.classList.replace(
+                "animate__rotateInDownRight",
+                "animate__rotateOutUpRight"
+            ); // Fade out the last clone
+
+            lastClone.addEventListener("animationend", () => {
+                if (lastClone.parentNode) {
+                    lastClone.remove();
+                }
+            });
+            setClones(prevClones => prevClones.slice(0, -1)); // Remove from state
+        }
+    };
+
+    const removeAllClones = () => {
+        clones.forEach(clone => {
+            clone.remove();
+        });
+        setClones([]); // Clear the clones state
     };
 
     const handleSubQuantity = (): void => {
         dispatch(decreaseQuantity(cart));
+        removeLastClone();
     };
 
     const handleDeleteCart = (): void => {
-        dispatch(removCart(cart));
-        const updatedProducts = products.map(pd =>
-            pd.id == cart.id ? { ...pd, isInCart: false } : pd
-        );
+        const cartItem = document.querySelector(
+            `div[cart-item-id='${cart.id}']`
+        ) as HTMLDivElement;
+        cartItem.classList.add("animate__hinge");
 
-        const updatedAllProducts = allProducts.map(pd =>
-            pd.id == cart.id ? { ...pd, isInCart: false } : pd
-        );
+        cartItem.addEventListener("animationend", () => {
+            removeAllClones();
 
-        dispatch(setProducts(updatedProducts));
-        dispatch(setAllProducts(updatedAllProducts));
+            dispatch(removCart(cart));
+            // removeAllClones();
+
+            const updatedProducts = products.map(pd =>
+                pd.id == cart.id ? { ...pd, isInCart: false } : pd
+            );
+
+            const updatedAllProducts = allProducts.map(pd =>
+                pd.id == cart.id ? { ...pd, isInCart: false } : pd
+            );
+
+            dispatch(setProducts(updatedProducts));
+            dispatch(setAllProducts(updatedAllProducts));
+        });
     };
     return (
         <Fade>
             <div
-                onAnimationEnd={handleDeleteCart}
-                className={` group animate__animated ${
-                    deletedPdId == cart.id ? "animate__hinge" : ""
-                }`}
+                cart-item-id={cart.id}
+                // onAnimationEnd={handleDeleteCart}
+                className={` cart-item group animate__animated `}
             >
-                <img
-                    src={cart.image}
-                    className=" h-12 -mb-5 ms-5 group-hover:-rotate-6 duration-300"
-                    alt=""
-                />
+                <div img-div-id={cart.id}>
+                    <img
+                        data-id={cart.id}
+                        src={cart.image}
+                        className=" h-10 -mb-5 ms-5 group-hover:-rotate-6 duration-300"
+                        alt=""
+                    />
+                </div>
                 <div className=" shadow  rounded-lg p-5 relative">
                     <button
-                        onClick={() => setDeletedPdId(cart.id)}
+                        onClick={handleDeleteCart}
                         className=" absolute top-3 right-3"
                     >
                         <FaTrash className=" text-xs text-red-500" />
