@@ -24,7 +24,7 @@ const Cart = ({ cart }: Props) => {
 
     const [deletedPdId, setDeletedPdId] = useState("");
 
-    const { products } = useAppSelector(state => state.product);
+    const { products,allProducts } = useAppSelector(state => state.product);
 
     const handleAddQuantity = (): void => {
         dispatch(increaseQuantity(cart));
@@ -40,8 +40,12 @@ const Cart = ({ cart }: Props) => {
             pd.id == cart.id ? { ...pd, isInCart: false } : pd
         );
 
+        const updatedAllProducts = allProducts.map(pd =>
+            pd.id == cart.id ? { ...pd, isInCart: false } : pd
+        );
+
         dispatch(setProducts(updatedProducts));
-        dispatch(setAllProducts(updatedProducts));
+        dispatch(setAllProducts(updatedAllProducts));
     };
     return (
         <Fade>

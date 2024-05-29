@@ -1,4 +1,4 @@
-import { DomRectInfo, Product } from "@/app/types";
+import { Product } from "@/app/types";
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
@@ -8,7 +8,7 @@ export interface ProductState {
     allProducts: Product[];
     category: string;
     searchedKeyword: string;
-    cartBtnInfo: DomRectInfo | null;
+    
 }
 
 const initialState: ProductState = {
@@ -16,7 +16,7 @@ const initialState: ProductState = {
     allProducts: [],
     category: "",
     searchedKeyword: "",
-    cartBtnInfo: { width: 0, height: 0, top: 0, left: 0 },
+   
 };
 
 export const productSlice = createSlice({
@@ -35,9 +35,7 @@ export const productSlice = createSlice({
         setSearchedKeyword: (state, { payload }: PayloadAction<string>) => {
             state.searchedKeyword = payload;
         },
-        setCartBtnInfo: (state, { payload }: PayloadAction<DomRectInfo | null>) => {
-            state.cartBtnInfo = payload;
-        },
+        
     },
 });
 
@@ -47,7 +45,7 @@ export const {
     setAllProducts,
     setCategory,
     setSearchedKeyword,
-    setCartBtnInfo,
+    
 } = productSlice.actions;
 
 export default productSlice.reducer;

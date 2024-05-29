@@ -1,5 +1,5 @@
-import type {  Product } from "@/app/types";
-import { useEffect, useRef, useState } from "react";
+import type { Product } from "@/app/types";
+import { MouseEvent, useRef, useState } from "react";
 import { FaRegStar, FaStar } from "react-icons/fa";
 import { Button } from "../ui/button";
 import { Fade } from "react-awesome-reveal";
@@ -10,7 +10,7 @@ import {
     setProducts,
 } from "@/app/features/product/productSlice";
 import Swal from "sweetalert2";
-import AnimatedImage from "./AnimatedImage";
+
 
 type Props = {
     product: Product;
@@ -18,68 +18,123 @@ type Props = {
 
 const Product = ({ product }: Props) => {
     const [isHover, setIsHover] = useState(false);
-    const [isImgAnimated, setIsImgAnimated] = useState(false);
-    const [imgInfo, setImgInfo] = useState<DOMRect | null>(null);
+
 
     const imgRef = useRef<HTMLImageElement | null>(null);
 
     const { carts } = useAppSelector(state => state.cart);
-    const { products } = useAppSelector(state => state.product);
+    const { products, allProducts } = useAppSelector(state => state.product);
 
     const dispatch = useAppDispatch();
 
-    const handleAddToCart = (): void => {
+    const updatedProducts = (product: Product,isInCart : boolean): void => {
+        const updatedProducts = products.map(pd =>
+            pd.id === product.id ? { ...pd, isInCart: isInCart } : pd
+        );
+
+        const updatedAllProducts = allProducts.map(pd =>
+            pd.id == product.id ? { ...pd, isInCart: isInCart } : pd
+        );
+
+        dispatch(setProducts(updatedProducts));
+        dispatch(setAllProducts(updatedAllProducts));
+    };
+
+    const handleAddToCartClick = async (
+        event: MouseEvent<HTMLButtonElement>,
+        product: Product
+    ) => {
         if (product.isInCart) {
-            Swal.fire({
-                title: "Are you sure?",
-                text: "You won't be able to revert this!",
-                icon: "question",
-                iconColor: "#1f2937",
-                showCancelButton: true,
-                confirmButtonColor: "#1f2937",
-                cancelButtonColor: "#1f2937",
-                confirmButtonText: "Confrim",
-            }).then(result => {
-                if (result.isConfirmed) {
-                    const updatedProducts = products.map(pd =>
-                        pd.id == product.id ? { ...pd, isInCart: false } : pd
-                    );
+            const isConfirmed = await confirmRemoval();
+            if (!isConfirmed) return;
 
-                    dispatch(setProducts(updatedProducts));
-                    dispatch(setAllProducts(updatedProducts));
-
-                    const updatedCarts = carts.filter(
-                        cart => cart.id != product.id
-                    );
-                    dispatch(setCarts(updatedCarts));
-                }
-            });
+            updatedProducts(product,false)
+            const updatedCarts = carts.filter(cart => cart.id !== product.id);
+            dispatch(setCarts(updatedCarts));
         } else {
-            const updatedProducts = products.map(pd =>
-                pd.id == product.id ? { ...pd, isInCart: true } : pd
-            );
-
-            dispatch(setProducts(updatedProducts));
-            dispatch(setAllProducts(updatedProducts));
-
+           
+            updatedProducts(product,true)
             const updatedCarts = [...carts, { ...product, quantity: 1 }];
 
             dispatch(setCarts(updatedCarts));
-            setIsImgAnimated(true);
+            animateAddToCart(event);
         }
+
+       
     };
 
-    useEffect(() => {
-        if (imgRef.current) {
-            // const { width, height, top, left } = imgRef.current.getBoundingClientRect();
-            setImgInfo(imgRef.current.getBoundingClientRect());
-        }
-    }, []);
+    const confirmRemoval = async () => {
+        const result = await Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "question",
+            iconColor: "#1f2937",
+            showCancelButton: true,
+            confirmButtonColor: "#1f2937",
+            cancelButtonColor: "#1f2937",
+            confirmButtonText: "Confirm",
+        });
+
+        return result.isConfirmed;
+    };
+
+    const animateAddToCart = (event: MouseEvent<HTMLButtonElement>) => {
+        // Get the image element and its position
+        const imgElement = event.currentTarget
+            .closest(".product-card")
+            ?.querySelector("img") as HTMLImageElement;
+        if (!imgElement) return;
+
+        const imgRect = imgElement.getBoundingClientRect();
+
+        // Clone the image and set its initial position
+        const clonedImg = imgElement.cloneNode(true) as HTMLImageElement;
+        clonedImg.style.position = "fixed";
+        clonedImg.style.top = `${imgRect.top}px`;
+        clonedImg.style.left = `${imgRect.left}px`;
+        clonedImg.style.width = `${imgRect.width}px`;
+        clonedImg.style.height = `${imgRect.height}px`;
+        clonedImg.style.transition = "all 0.5s ease";
+        clonedImg.style.zIndex = "1000"; // Ensure it's above other elements
+
+        document.body.appendChild(clonedImg);
+
+        // Set the target position (e.g., cart icon position)
+        const cartIcon = document.querySelector(".cart-icon");
+        const cartBtnInfo = cartIcon?.getBoundingClientRect();
+
+        const keyframe = [
+            {
+                top: imgRect?.top + "px",
+                left: imgRect?.left + "px",
+            },
+            {
+                top: cartBtnInfo?.top + "px",
+                left: cartBtnInfo?.left + "px",
+                width: 10 + "px",
+                height: 10 + "px",
+                rotate: "2turn",
+            },
+        ];
+
+        const options: KeyframeAnimationOptions = {
+            duration: 700,
+            iterations: 1,
+            fill: "both",
+        };
+
+        const animation = clonedImg.animate(keyframe, options);
+
+        // Remove the cloned image after the animation
+        animation.addEventListener("finish", () => {
+            clonedImg.remove();
+        });
+    };
 
     return (
         <Fade>
             <div
-                className=" group"
+                className=" group product-card"
                 onMouseEnter={() => setIsHover(true)}
                 onMouseLeave={() => setIsHover(false)}
             >
@@ -89,13 +144,7 @@ const Product = ({ product }: Props) => {
                     className=" h-32 -mb-16 ms-5 group-hover:-rotate-6 duration-300"
                     alt=""
                 />
-                {isImgAnimated && (
-                    <AnimatedImage
-                        src={product.image}
-                        imgInfo={imgInfo}
-                        setIsImgAnimated={setIsImgAnimated}
-                    />
-                )}
+                
                 <div
                     className=" shadow group-hover:shadow-2xl duration-300 rounded-lg p-5 "
                     style={{ transform: isHover ? "rotateX(25deg)" : "" }}
@@ -131,7 +180,7 @@ const Product = ({ product }: Props) => {
                         <div>
                             <Button
                                 // disabled={product.isInCart}
-                                onClick={handleAddToCart}
+                                onClick={e => handleAddToCartClick(e, product)}
                                 size={"sm"}
                                 variant={
                                     product.isInCart ? "default" : "outline"
