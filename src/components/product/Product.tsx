@@ -40,7 +40,7 @@ const Product = ({ product }: Props) => {
         dispatch(setAllProducts(updatedAllProducts));
     };
 
-    const handleAddToCartClick = async (
+    const handleAddToCartBtnClick = async (
         event: MouseEvent<HTMLButtonElement>,
         product: Product
     ) => {
@@ -180,7 +180,7 @@ const Product = ({ product }: Props) => {
                         <div>
                             <Button
                                 // disabled={product.isInCart}
-                                onClick={e => handleAddToCartClick(e, product)}
+                                onClick={e => handleAddToCartBtnClick(e, product)}
                                 size={"sm"}
                                 variant={
                                     product.isInCart ? "default" : "outline"

@@ -8,7 +8,10 @@ export type Product = {
     title: string;
     isInCart: boolean;
     quantity?: number;
+   
 };
+
+
 
 export type DomRectInfo = {
     width: number;
