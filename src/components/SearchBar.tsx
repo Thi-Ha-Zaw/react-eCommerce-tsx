@@ -13,7 +13,7 @@ const SearchBar = (props: Props) => {
 
     const handleKeywordChange = (e: ChangeEvent<HTMLInputElement>): void => {
         setKeyword(e.target.value);
-        dispatch(setSearchedKeyword(e.target.value))
+        dispatch(setSearchedKeyword(e.target.value.toLowerCase()))
         const searchKeyword = e.target.value.toLowerCase();
         const filterProducts = allProducts.filter(product =>
             category

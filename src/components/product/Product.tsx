@@ -44,6 +44,7 @@ const Product = ({ product }: Props) => {
         event: MouseEvent<HTMLButtonElement>,
         product: Product
     ) => {
+       
         if (product.isInCart) {
             const isConfirmed = await confirmRemoval();
             if (!isConfirmed) return;

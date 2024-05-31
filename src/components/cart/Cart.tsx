@@ -14,25 +14,24 @@ import { Fade } from "react-awesome-reveal";
 import { FaTrash } from "react-icons/fa";
 import { FiMinus } from "react-icons/fi";
 import { GoPlus } from "react-icons/go";
+import { createClone } from "./functions";
 
 type Props = {
     cart: Required<Product>;
 };
 
+type CloneImage = {
+    id: number;
+    left: number;
+    top: number;
+    width: number;
+    height: number;
+};
+
 const Cart = ({ cart }: Props) => {
     const dispatch = useAppDispatch();
 
-    const [clones, setClones] = useState<
-        Array<{
-            id: number;
-            left: number;
-            top: number;
-            width: number;
-            height: number;
-        }>
-    >([]);
-
-    console.log(clones);
+    const [clones, setClones] = useState<CloneImage[]>([]);
 
     const { products, allProducts } = useAppSelector(state => state.product);
 
@@ -62,6 +61,7 @@ const Cart = ({ cart }: Props) => {
                     width: imgRect.width,
                     height: imgRect.height,
                 });
+                createClone(imgElement, cartItem, i, offset);
             }
             setClones(currentClones);
         }
@@ -82,6 +82,7 @@ const Cart = ({ cart }: Props) => {
 
         const offset = (imgRect.width / 2) * cloneIndex;
 
+        createClone(imgElement, cartItem, cloneIndex, offset);
         // Add the new clone to the list of clones
         setClones(prevClones => [
             ...prevClones,
@@ -106,9 +107,9 @@ const Cart = ({ cart }: Props) => {
     const removeLastClone = () => {
         if (clones.length === 0) return;
         const lastClone = clones[clones.length - 1];
-        console.log(lastClone.id);
+
         const cloneElement = document.querySelector(
-            `img[data-id='${cart?.id}'][data-clone-id='${lastClone?.id}']`
+            `div[cart-item-id='${cart.id}'] img[data-clone-id='${lastClone?.id}']`
         ) as HTMLImageElement;
         if (!cloneElement) return;
 
@@ -118,20 +119,14 @@ const Cart = ({ cart }: Props) => {
         ); // Fade out the last clone
 
         cloneElement.addEventListener("animationend", () => {
-            
-
-            const updatedClones = clones.filter(cl => cl.id != lastClone.id);
-
-            setClones(updatedClones); // Remove from state
-           
-        },{once : true});
-
-       
+            cloneElement.remove();
+        });
+        setClones(prevClones => prevClones.slice(0, -1));
     };
 
     const handleSubQuantity = (): void => {
-        dispatch(decreaseQuantity(cart));
         removeLastClone();
+        dispatch(decreaseQuantity(cart));
     };
 
     const handleDeleteCart = (): void => {
@@ -166,7 +161,7 @@ const Cart = ({ cart }: Props) => {
                     <img
                         data-id={cart.id}
                         src={cart.image}
-                        className=" h-10 -mb-5 ms-5 group-hover:-rotate-6 duration-300"
+                        className={` ${cart.id == '6' ? ' sm:h-8 h-6' : 'h-10'}  -mb-5 ms-5 group-hover:-rotate-6 duration-300`}
                         alt=""
                     />
                 </div>
@@ -206,24 +201,6 @@ const Cart = ({ cart }: Props) => {
                         </div>
                     </div>
                 </div>
-                {clones.map(clone => (
-                    <img
-                        key={clone.id}
-                        data-id={cart.id}
-                        data-clone-id={clone.id}
-                        src={cart.image}
-                        style={{
-                            position: "absolute",
-                            top: `${clone.top}px`,
-                            left: `${clone.left}px`,
-                            width: `${clone.width}px`,
-                            height: `${clone.height}px`,
-                            zIndex: 1000,
-                            transition: "all 0.5s ease",
-                        }}
-                        className=" ms-5 animate__animated animate__rotateInDownRight clone"
-                    />
-                ))}
             </div>
         </Fade>
     );
