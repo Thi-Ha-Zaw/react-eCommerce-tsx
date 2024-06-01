@@ -6,9 +6,9 @@ import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { setCategory, setProducts } from "@/app/features/product/productSlice";
 
-type Props = {};
 
-const Categories = (props: Props) => {
+
+const Categories = () => {
     const { data: allCategories, isLoading: isCategoryLoading } =
         useGetProductCategoriesQuery();
 
