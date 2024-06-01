@@ -4,7 +4,7 @@ import CartBag from "../CartBag";
 
 const Navbar = () => {
     return (
-        <div className=" container mx-auto my-3 sticky top-0 bg-white z-10">
+        <div className=" sm:container sm:mx-auto my-3 sticky top-0 bg-white z-10">
             <div className="flex justify-between items-center p-4 shadow rounded-lg">
                 <Logo />
                 <div className=" flex gap-2 items-end">

@@ -183,17 +183,17 @@ const Cart = ({ cart }: Props) => {
                             $<span>{cart.price}</span>
                         </p>
                         <div>
-                            <div className=" group flex items-center gap-2">
+                            <div className=" flex items-center gap-2">
                                 <button
                                     onClick={handleSubQuantity}
-                                    className=" bg-gray-100 rounded-xl p-1  group-hover:pointer-events-auto  group-hover:translate-x-0 group-hover:opacity-100 pointer-events-none opacity-0 -translate-x-3 duration-300"
+                                    className=" bg-gray-100 rounded-xl p-1  sm:group-hover:pointer-events-auto  sm:group-hover:translate-x-0 sm:group-hover:opacity-100 sm:pointer-events-none sm:opacity-0 sm:-translate-x-3 duration-300"
                                 >
                                     <FiMinus className=" text-xs" />
                                 </button>
                                 <p>{cart.quantity}</p>
                                 <button
                                     onClick={handleAddQuantity}
-                                    className=" bg-gray-100 rounded-xl p-1  group-hover:pointer-events-auto  group-hover:translate-x-0 group-hover:opacity-100 pointer-events-none opacity-0 translate-x-3 duration-300"
+                                    className=" bg-gray-100 rounded-xl p-1  sm:group-hover:pointer-events-auto  sm:group-hover:translate-x-0 sm:group-hover:opacity-100 sm:pointer-events-none sm:opacity-0 sm:translate-x-3 duration-300"
                                 >
                                     <GoPlus className=" text-xs" />
                                 </button>
