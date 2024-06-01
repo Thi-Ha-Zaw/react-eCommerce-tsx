@@ -6,9 +6,9 @@ import Cart from "./Cart";
 import { Button } from "../ui/button";
 import emptyCart from "../../images/emptyCart.svg";
 
-type Props = {};
 
-const CartSheet = (props: Props) => {
+
+const CartSheet = () => {
     const { isCartSheetOpen, carts } = useAppSelector(state => state.cart);
     const dispatch = useAppDispatch();
 

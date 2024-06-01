@@ -1,6 +1,6 @@
-type Props = {};
 
-const ProductCardLoader = (props: Props) => {
+
+const ProductCardLoader = () => {
     return (
         <div
             role="status"

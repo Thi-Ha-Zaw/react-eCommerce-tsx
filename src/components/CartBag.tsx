@@ -4,9 +4,9 @@ import { useAppDispatch, useAppSelector } from "@/app/hooks";
 
 import { FaShopify } from "react-icons/fa";
 
-type Props = {};
 
-const CartBag = (props: Props) => {
+
+const CartBag = () => {
     const { carts } = useAppSelector(state => state.cart);
 
     const dispatch = useAppDispatch();

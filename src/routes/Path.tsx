@@ -1,9 +1,9 @@
 import ProductsPage from "@/pages/ProductsPage";
 import { Route, Routes } from "react-router-dom";
 
-type Props = {};
 
-const Path = (props: Props) => {
+
+const Path = () => {
     return (
         <>
             <Routes>

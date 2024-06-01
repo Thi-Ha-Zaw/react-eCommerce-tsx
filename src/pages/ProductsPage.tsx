@@ -13,9 +13,9 @@ import emptyProduct from "../images/emptyCart.svg";
 import CartSheet from "@/components/cart/CartSheet";
 
 
-type Props = {};
 
-const ProductsPage = (props: Props) => {
+
+const ProductsPage = () => {
     const { data, isLoading } = useGetProductsQuery();
 
     const dispatch = useAppDispatch();

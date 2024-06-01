@@ -2,9 +2,9 @@ import { setProducts, setSearchedKeyword } from "@/app/features/product/productS
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { ChangeEvent, useState } from "react";
 
-type Props = {};
 
-const SearchBar = (props: Props) => {
+
+const SearchBar = () => {
     const [keyword, setKeyword] = useState("");
 
     const { allProducts, category } = useAppSelector(state => state.product);
