@@ -14,7 +14,7 @@ import { Fade } from "react-awesome-reveal";
 import { FaTrash } from "react-icons/fa";
 import { FiMinus } from "react-icons/fi";
 import { GoPlus } from "react-icons/go";
-import { createClone } from "./functions";
+import { createClone, Toast } from "./functions";
 
 type Props = {
     cart: Required<Product>;
@@ -100,8 +100,18 @@ const Cart = ({ cart }: Props) => {
     };
 
     const handleAddQuantity = (): void => {
-        dispatch(increaseQuantity(cart));
-        animateQuantityAdded();
+        if (parseInt(cart.id) == 6 && cart.quantity < 7) {
+            dispatch(increaseQuantity(cart));
+            animateQuantityAdded();
+        } else if (parseInt(cart.id) != 6 && cart.quantity < 10) {
+            dispatch(increaseQuantity(cart));
+            animateQuantityAdded();
+        } else {
+            Toast.fire({
+                icon: "warning",
+                title: "Out of quantity",
+            });
+        }
     };
 
     const removeLastClone = () => {
@@ -161,7 +171,9 @@ const Cart = ({ cart }: Props) => {
                     <img
                         data-id={cart.id}
                         src={cart.image}
-                        className={` ${cart.id == '6' ? ' sm:h-8 h-6' : 'h-10'}  -mb-5 ms-5 group-hover:-rotate-6 duration-300`}
+                        className={` ${
+                            cart.id == "6" ? " sm:h-8 h-4" : "h-10"
+                        }  -mb-5 ms-5 group-hover:-rotate-6 duration-300`}
                         alt=""
                     />
                 </div>
